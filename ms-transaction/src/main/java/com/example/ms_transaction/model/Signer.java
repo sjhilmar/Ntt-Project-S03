@@ -1,4 +1,4 @@
-package com.example.ms_bankaccount.model;
+package com.example.ms_transaction.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

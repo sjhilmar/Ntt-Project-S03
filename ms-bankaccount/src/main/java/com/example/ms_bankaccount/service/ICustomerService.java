@@ -1,4 +1,8 @@
 package com.example.ms_bankaccount.service;
 
-public class ICustomerService {
+import com.example.ms_bankaccount.model.Customer;
+import reactor.core.publisher.Mono;
+
+public interface ICustomerService {
+    Mono<Customer> getCustomerByDocumentNumber(String documentNumber);
 }

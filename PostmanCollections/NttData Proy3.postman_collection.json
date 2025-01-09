@@ -1,0 +1,741 @@
+{
+	"info": {
+		"_postman_id": "18510185-132c-4e23-9087-ccea5a1967d9",
+		"name": "NttData Proy3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20064556"
+	},
+	"item": [
+		{
+			"name": "Ms Customers",
+			"item": [
+				{
+					"name": "Find All Customers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8090/api/customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Customer by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8090/api/customers/677ca1904ecf4b3041d306a1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"customers",
+								"677ca1904ecf4b3041d306a1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Customer by Document Number",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8090/api/customers/documentNumber/20203000508",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"customers",
+								"documentNumber",
+								"20203000508"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Customer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"documentNumber\": \"78945614\",\r\n    \"companyName\": \"Sergio Jhilmar Alvarez\",\r\n    \"customerName\": \"Sergio Jhilmar Alvarez\",\r\n    \"email\": \"salvarez@gmail.com\",\r\n    \"phoneNumber\": \"985467783\",\r\n    \"customerType\": \"PERSONAL_VIP\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/api/customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a customer by Id",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"documentNumber\": \"20203000508\",\r\n        \"companyName\": \"Consultora AKR\",\r\n        \"customerName\": \"Juan Casas Grandes\",\r\n        \"email\": \"jcasas@consultora.com\",\r\n        \"phoneNumber\": \"951258333\",\r\n        \"customerType\": \"EMPRESARIAL\",\r\n        \"createdAt\": \"2025-01-06T22:37:52.411\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/api/customers/677ca1904ecf4b3041d306a1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"customers",
+								"677ca1904ecf4b3041d306a1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a customer by Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8090/api/customers/677ca3544ecf4b3041d306a5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"customers",
+								"677ca3544ecf4b3041d306a5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ms Credits",
+			"item": [
+				{
+					"name": "Credtis",
+					"item": [
+						{
+							"name": "Find All Credits",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8090/api/credits",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"credits"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find All Credits By Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8090/api/credits/677d806e48dae2579d01291c",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"credits",
+										"677d806e48dae2579d01291c"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find All Credits By CustomerId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8090/api/credits/customer/677ca2f94ecf4b3041d306a4",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"credits",
+										"customer",
+										"677ca2f94ecf4b3041d306a4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Save Customers Credit",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"holder\": {\r\n        \"documentNumber\": \"78945614\"\r\n    },\r\n    \"creditAmount\": 5000,\r\n    \"interesRate\": 19,\r\n    \"loanTerm\": 12,\r\n    \"startDate\": \"2024-06-01\",\r\n    \"endDate\": \"2025-06-01\",\r\n    \"creditType\": \"CREDITO_PERSONAL\",\r\n    \"monthPayment\": 417.00\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/api/credits",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"credits"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Credit",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"holder\": {\r\n        \"documentNumber\": \"20203000508\"\r\n    },\r\n    \"creditAmount\": 4000,\r\n    \"interesRate\": 10.0,\r\n    \"loanTerm\": 12,\r\n    \"startDate\": \"2024-01-07\",\r\n    \"endDate\": \"2025-01-06\",\r\n    \"creditType\": \"CREDITO_EMPRESARIAL\",\r\n    \"monthPayment\": 150.00\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/api/credits/677d806e48dae2579d01291c",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"credits",
+										"677d806e48dae2579d01291c"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Credit",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8090/api/credits/677d94a234cbd8031fd245f5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"credits",
+										"677d94a234cbd8031fd245f5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Balance",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"balance\": 1500\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/api/credits/balance/677d806e48dae2579d01291c",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"credits",
+										"balance",
+										"677d806e48dae2579d01291c"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Credit Cards",
+					"item": [
+						{
+							"name": "Find All Credit Cards",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8090/api/creditcards",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"creditcards"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find All Credit Card By Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8090/api/credits/677d806e48dae2579d01291c",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"credits",
+										"677d806e48dae2579d01291c"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find All Credit Card By CustomerId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8090/api/creditcards/customer/677ca1904ecf4b3041d306a1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"creditcards",
+										"customer",
+										"677ca1904ecf4b3041d306a1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Save CreditCards",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"holder\":{\r\n        \"documentNumber\":\"20789148251\"\r\n    },\r\n    \"cardNumber\":\"4444-4444-4444-0006\",\r\n    \"creditLine\":24000,\r\n    \"creditType\":\"TARJETA_CREDITO\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/api/creditcards",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"creditcards"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update CreditCards",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"holder\": {\r\n        \"documentNumber\": \"10147852681\"\r\n    },\r\n    \"cardNumber\": \"4444-4444-4444-0005\",\r\n    \"creditLine\": 1400,\r\n    \"creditType\": \"TARJETA_CREDITO\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8090/api/creditcards/677dbf1b60fc627bb0db7c1f",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"creditcards",
+										"677dbf1b60fc627bb0db7c1f"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete CreditCard",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8090/api/creditcards/677dbf1b60fc627bb0db7c1f",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"creditcards",
+										"677dbf1b60fc627bb0db7c1f"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Balance",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8090/api/creditcards",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8090",
+									"path": [
+										"api",
+										"creditcards"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Ms Bank Accounts",
+			"item": [
+				{
+					"name": "Find All Accounts",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Find Account by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8090/api/bankaccount/677f0dd30a39cc1b7f2025c9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"bankaccount",
+								"677f0dd30a39cc1b7f2025c9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Account by Customer Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8090/api/bankaccount/customer/677ca2a94ecf4b3041d306a3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"bankaccount",
+								"customer",
+								"677ca2a94ecf4b3041d306a3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"primaryHolder\": {\r\n        \"documentNumber\": \"20789148251\"\r\n    },\r\n    \"secondaryHolders\": [\r\n        \"Jashin Jauregui\"\r\n    ],\r\n    \"accountNumber\": \"19312345650014\",\r\n    \"cardNumber\": \"4444-4444-4433-0013\",\r\n    \"authorizedSigners\": [\r\n        {\r\n            \"documentNumber\":\"20789148251\",\r\n            \"signerName\":\"Fabiola Carrasco\",\r\n            \"email\": \"fcarrasco@gmail.com\",\r\n            \"phoneNumber\":\"987145213\"\r\n        }\r\n    ],\r\n    \"productType\": \"CUENTA_AHORRO\",\r\n    \"numberMaxTransactions\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/api/bankaccount",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"bankaccount"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Account",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"677eb8a42dad516982a50cf0\",\r\n    \"primaryHolder\": {\r\n        \"id\": \"677ca2a94ecf4b3041d306a3\",\r\n        \"documentNumber\": \"73478999\",\r\n        \"companyName\": \"Dante Valentino Alvarez\",\r\n        \"customerName\": \"Dante Valentino Alvarez\",\r\n        \"email\": \"dvalvarez@gmail.com\",\r\n        \"phoneNumber\": \"985467783\",\r\n        \"customerType\": \"PERSONAL\"\r\n    },\r\n    \"secondaryHolders\": [],\r\n    \"accountNumber\": \"19312345650001\",\r\n    \"cardNumber\": \"4444-4444-4433-0001\",\r\n    \"authorizedSigners\": [\r\n        {\r\n            \"documentNumber\": \"78945678\",\r\n            \"signerName\": \"Juan Cajaguanta\",\r\n            \"email\": \"jcajaguanta@gmail.com\",\r\n            \"phoneNumber\": \"987456748\"\r\n        }\r\n    ],\r\n    \"balance\": null,\r\n    \"productType\": \"CUENTA_AHORRO\",\r\n    \"numberMaxTransactions\": 10,\r\n    \"hasCreditCard\": true,\r\n    \"createdAt\": \"2025-01-08T12:40:52.1804573\",\r\n    \"updatedAt\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Balance",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"balance\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/api/bankaccount/balance/677dbf1b60fc627bb0db7c1f",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"bankaccount",
+								"balance",
+								"677dbf1b60fc627bb0db7c1f"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ms Transactions",
+			"item": [
+				{
+					"name": "Find All Transactions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8090/api/transactions/677f3eec3e335d6bc60bffc3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"transactions",
+								"677f3eec3e335d6bc60bffc3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Transaction by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8090/api/transactions/677f3eec3e335d6bc60bffc3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"transactions",
+								"677f3eec3e335d6bc60bffc3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Transaction by ProductId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8090/api/transactions/product/677eb8a42dad516982a50cf0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"transactions",
+								"product",
+								"677eb8a42dad516982a50cf0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Transactions",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product\": {\r\n        \"productId\": \"677eb8a42dad516982a50cf0\",\r\n        \"productType\": \"CUENTA_AHORRO\"\r\n    },\r\n    \"transactionType\": \"DEPOSITO\",\r\n    \"amount\": 350.0,\r\n    \"comission\": 10.1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/api/transactions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"api",
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

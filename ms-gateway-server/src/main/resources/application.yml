@@ -1,0 +1,24 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: ms-customer
+          uri: lb://ms-customer
+          predicates:
+            - Path=/api/customers/**
+        - id: ms-bankcredit-credits
+          uri: lb://ms-bankcredit
+          predicates:
+            - Path=/api/credits/**
+        - id: ms-bankcredit-creditcards
+          uri: lb://ms-bankcredit
+          predicates:
+            - Path=/api/creditcards/**
+        - id: ms-bankaccount
+          uri: lb://ms-bankaccount
+          predicates:
+            - Path=/api/bankaccount/**
+        - id: ms-transaction
+          uri: lb://ms-transaction
+          predicates:
+            - Path=/api/transactions/**
