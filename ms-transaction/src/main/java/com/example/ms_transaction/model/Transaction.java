@@ -1,6 +1,5 @@
 package com.example.ms_transaction.model;
 
-import com.example.ms_transaction.model.enums.ProductType;
 import com.example.ms_transaction.model.enums.TransactionType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -18,8 +17,10 @@ public class Transaction {
     private String id;
     @NotNull(message = "Se requiere ingresar el Id de la cuenta/")
     private Product product;
+    private Product targetProduct;
     @NotNull(message = "Se requiere ingresar el tipo de transacción")
     private TransactionType transactionType;
+    private MovementType movementType;
     private LocalDate transactionDate;
     @NotNull(message = "Se requiere ingresar el monto de la transacción")
     private BigDecimal amount;

@@ -1,7 +1,6 @@
 package com.example.ms_transaction.service.impl;
 
-import com.example.ms_transaction.model.Credit;
-import com.example.ms_transaction.model.CreditCard;
+import com.example.ms_transaction.model.MovementType;
 import com.example.ms_transaction.model.Transaction;
 import com.example.ms_transaction.model.enums.TransactionType;
 import com.example.ms_transaction.repository.TransactionRepository;
@@ -16,7 +15,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -55,12 +53,14 @@ public class TransactionService implements ITransactionService {
                     switch (transaction.getTransactionType()) {
                         case DEPOSITO:
                             newBalance = account.getBalance().add(transaction.getAmount());
+                            transaction.setMovementType(MovementType.INGRESO);
                             break;
                         case RETIRO:
                             if (account.getBalance().compareTo(transaction.getAmount()) < 0) {
                                 return Mono.error(new CustomException("Saldo insuficiente para el retiro"));
                             }
                             newBalance = account.getBalance().subtract(transaction.getAmount());
+                            transaction.setMovementType(MovementType.EGRESO);
                             break;
                         default:
                             return Mono.error(new CustomException("Tipo de transacción no soportado para cuentas bancarias"));
@@ -74,6 +74,31 @@ public class TransactionService implements ITransactionService {
 
     @Override
     public Mono<Transaction> handleCreditTransaction(Transaction transaction) {
+
+        if (!transaction.getProduct().getId().equalsIgnoreCase(transaction.getTargetProduct().getId())){
+            return bankAccountService.getAccountById(transaction.getTargetProduct().getId())
+               .flatMap(account -> {
+                   if (account.getBalance().compareTo(transaction.getAmount())<0){
+                       return Mono.error(new CustomException("Saldo insuficiente para el pago del crédito"));
+                   }
+
+                   BigDecimal newBalanceAccount = account.getBalance().subtract(transaction.getAmount());
+                   transaction.getTargetProduct().setProductBalance(newBalanceAccount);
+
+                   return bankAccountService.updateBalance(transaction.getTargetProduct().getId(),newBalanceAccount)
+                           .then(creditService.getCreditById(transaction.getProduct().getId()))
+                           .flatMap(credit->{
+
+                            if (transaction.getTransactionType() != TransactionType.PAGO && transaction.getTransactionType() != TransactionType.PAGO_TERCEROS){
+                                return Mono.error(new CustomException("Para realizar pagos de terceros el tipo de pago debe ser PAGO_TERCEROS"));
+                            }
+                            BigDecimal newBalance = credit.getOutstandingBalance().subtract(transaction.getAmount());
+                            transaction.getProduct().setProductBalance(newBalance);
+                            return creditService.updateCreditBalance(transaction.getProduct().getId(), newBalance)
+                                    .then(transactionRepository.save(transaction));
+                           });
+            });
+        }
         return creditService.getCreditById(transaction.getProduct().getId())
                 .flatMap(credit -> {
 
@@ -129,18 +154,46 @@ public class TransactionService implements ITransactionService {
 
     @Override
     public Mono<Transaction> bankTransferTransactions(Transaction transaction) {
+
+        transaction.setCreatedAt(LocalDateTime.now());
         return bankAccountService.getAccountById(transaction.getProduct().getId())
                 .flatMap(sourceAccount -> {
                     if (sourceAccount.getBalance().compareTo(transaction.getAmount()) < 0) {
                         return Mono.error(new CustomException("Saldo insuficiente para la transferencia"));
                     }
                     BigDecimal newSourceBalance = sourceAccount.getBalance().subtract(transaction.getAmount());
-                    return bankAccountService.updateBalance(sourceAccount.getId(), newSourceBalance)
-                            .then(bankAccountService.getAccountById(transaction.getProduct().getId())
+                    transaction.getProduct().setProductBalance(newSourceBalance);
+                    return bankAccountService.updateBalance(transaction.getProduct().getId(), newSourceBalance)
+                            .then(bankAccountService.getAccountById(transaction.getTargetProduct().getId())
                                     .flatMap(targetAccount -> {
                                         BigDecimal newTargetBalance = targetAccount.getBalance().add(transaction.getAmount());
-                                        return bankAccountService.updateBalance(targetAccount.getId(), newTargetBalance)
-                                                .then(transactionRepository.save(transaction));
+                                        transaction.getTargetProduct().setProductBalance(newTargetBalance);
+
+                                        return bankAccountService.updateBalance(transaction.getTargetProduct().getId(), newTargetBalance)
+                                                .then(Mono.defer(()->{
+
+                                                    Transaction sourceTransaction = new Transaction();
+                                                    sourceTransaction.setProduct(transaction.getProduct());
+                                                    sourceTransaction.setTargetProduct(transaction.getTargetProduct());
+                                                    sourceTransaction.setAmount(transaction.getAmount());
+                                                    sourceTransaction.setTransactionType(TransactionType.TRANSFERENCIA);
+                                                    sourceTransaction.setMovementType(MovementType.EGRESO);
+                                                    sourceTransaction.setTransactionDate(LocalDate.now());
+                                                    sourceTransaction.setComission(transaction.getComission());
+
+                                                    Transaction destinationTransaction = new Transaction();
+                                                    destinationTransaction.setProduct(transaction.getProduct());
+                                                    destinationTransaction.setTargetProduct(transaction.getTargetProduct());
+                                                    destinationTransaction.setAmount(transaction.getAmount());
+                                                    destinationTransaction.setTransactionType(TransactionType.TRANSFERENCIA);
+                                                    destinationTransaction.setMovementType(MovementType.INGRESO);
+                                                    destinationTransaction.setTransactionDate(LocalDate.now());
+                                                    destinationTransaction.setComission(transaction.getComission());
+
+                                                    return transactionRepository.save(sourceTransaction)
+                                                            .then(transactionRepository.save(destinationTransaction));
+                                                }));
+
                                     }));
                 });
     }

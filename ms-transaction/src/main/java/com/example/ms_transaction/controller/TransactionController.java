@@ -3,6 +3,7 @@ package com.example.ms_transaction.controller;
 import com.example.ms_transaction.model.Transaction;
 import com.example.ms_transaction.service.ITransactionService;
 import jakarta.validation.Valid;
+import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,14 @@ public class TransactionController {
       return service.createTransaction(transaction)
               .map(createdTransaction-> ResponseEntity.status(HttpStatus.CREATED).body(createdTransaction))
               .doOnError(e->log.error("Error al registrar transacción\n{}",transaction,e));
+  }
+  @PostMapping("/transfer")
+  public Mono<ResponseEntity<Transaction>> tranferTransaction(@Valid @RequestBody Transaction transaction){
+      log.info("Realizando transferencias bancarias\n{}",transaction);
+      return service.bankTransferTransactions(transaction)
+              .map(createdTransaction->ResponseEntity.status(HttpStatus.CREATED).body(createdTransaction))
+              .doOnError(e -> log.error("Error al realizar transferencia bancaria\n{}",transaction,e));
+
   }
 
 

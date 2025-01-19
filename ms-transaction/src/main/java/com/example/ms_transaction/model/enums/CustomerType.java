@@ -2,7 +2,7 @@ package com.example.ms_transaction.model.enums;
 
 public enum CustomerType {
     PERSONAL,
+    PERSONAL_VIP,
     EMPRESARIAL,
-    PERSONALVIP,
-    EMPRESARIALMYPE
+    EMPRESARIAL_MYPE
 }
