@@ -8,6 +8,8 @@ public interface IDebitCardService {
 
     Flux<DebitCard>getAllDebitCards();
     Mono<DebitCard>getDebitCardById(String id);
-    Mono<DebitCard>linkDebitCard(DebitCard debitCard);
+    Mono<?>linkDebitCard(DebitCard debitCard);
+    Mono<?>updatedDebitCard(String id , DebitCard debitCard);
+
 
 }

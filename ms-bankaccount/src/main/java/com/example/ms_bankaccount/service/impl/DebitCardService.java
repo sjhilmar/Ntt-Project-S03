@@ -6,7 +6,6 @@ import com.example.ms_bankaccount.service.IBankAccountService;
 import com.example.ms_bankaccount.service.IDebitCardService;
 import com.example.ms_bankaccount.util.CustomException;
 import lombok.AllArgsConstructor;
-import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -34,22 +33,45 @@ public class DebitCardService implements IDebitCardService {
     }
 
     @Override
-    public Mono<DebitCard> linkDebitCard(DebitCard debitCard) {
+    public Mono<?> linkDebitCard(DebitCard debitCard) {
         return Flux.fromIterable(debitCard.getBankAccounts())
                 .flatMap(bankAccount -> bankAccountService.getAccountById(bankAccount.getId()))
                 .switchIfEmpty(Mono.error(new CustomException("Cuenta bancaria no encontrada")))
                 .collectList()
                 .flatMap(existingAccounts ->{
 
+                    if (existingAccounts.isEmpty()){
+                        return Mono.error(new CustomException("No se encontraron cuentas válidas"));
+                    }
+
                     String yearExpiration = LocalDate.now().plusYears(5).format(DateTimeFormatter.ofPattern("yy"));
 
-                    debitCard.setMonthExpiration(LocalDate.now().getMonth().toString());
+                    debitCard.setMonthExpiration(String.valueOf(LocalDate.now().getMonthValue()));
                     debitCard.setYearExpiration(yearExpiration);
                     debitCard.setCvv(String.format("%03d",new Random().nextInt(1000)));
                     debitCard.setCreateAt(LocalDateTime.now());
+                    debitCard.setBankAccounts(existingAccounts);
 
-                   return debitCardRepository.findById(debitCard.getId())
-                           .switchIfEmpty(debitCardRepository.save(debitCard));
+                    return debitCardRepository.findDebitCardByNumberCard(debitCard.getNumberCard())
+                            .flatMap(existingDebitCard-> Mono.error(new CustomException("La tarjeta de débito ya existe")))
+                            .switchIfEmpty(debitCardRepository.save(debitCard));
+                });
+    }
+
+    @Override
+    public Mono<?> updatedDebitCard(String id, DebitCard debitCard) {
+        return debitCardRepository.findById(id).
+                switchIfEmpty(Mono.error(new CustomException("Tarjeta de debito no encontrada")))
+                .flatMap(existingDebitCard->{
+                   return Flux.fromIterable(debitCard.getBankAccounts())
+                           .flatMap(bankAccount -> bankAccountService.getAccountById(bankAccount.getId()))
+                           .switchIfEmpty(Mono.error(new CustomException("Cuenta bancaria no válida")))
+                           .collectList()
+                           .flatMap(existingAccounts->{
+                               if (existingAccounts.isEmpty()) return Mono.error( new CustomException( "No se encontraron cuentas válidas"));
+                               existingDebitCard.setBankAccounts(existingAccounts);
+                               return debitCardRepository.save(existingDebitCard);
+                           });
                 });
     }
 }
