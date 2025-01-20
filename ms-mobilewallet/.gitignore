@@ -31,10 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-### Ignore Logs###
-/ms-customer/logs
-/ms-bankcredit/logs
-/ms-bankaccount/logs
-/ms-transaction/logs
-/ms-mobilewallet/logs

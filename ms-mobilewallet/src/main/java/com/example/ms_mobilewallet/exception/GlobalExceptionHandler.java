@@ -1,7 +1,7 @@
-package com.example.ms_bankcredit.exception;
+package com.example.ms_mobilewallet.exception;
 
-import com.example.ms_bankcredit.exception.dto.ErrorResponse;
-import com.example.ms_bankcredit.util.CustomException;
+import com.example.ms_mobilewallet.exception.dto.ErrorResponse;
+import com.example.ms_mobilewallet.util.CustomException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.time.LocalDateTime;
 
 @Log4j2
