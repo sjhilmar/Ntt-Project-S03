@@ -66,7 +66,7 @@ public class TransactionService implements ITransactionService {
                             return Mono.error(new CustomException("Tipo de transacción no soportado para cuentas bancarias"));
                     }
 
-                    transaction.getProduct().setProductBalance(newBalance);
+                    transaction.getProduct().setBalance(newBalance);
                     return bankAccountService.updateBalance(transaction.getProduct().getId(), newBalance)
                             .then(transactionRepository.save(transaction));
                 });
@@ -83,7 +83,7 @@ public class TransactionService implements ITransactionService {
                    }
 
                    BigDecimal newBalanceAccount = account.getBalance().subtract(transaction.getAmount());
-                   transaction.getTargetProduct().setProductBalance(newBalanceAccount);
+                   transaction.getTargetProduct().setBalance(newBalanceAccount);
 
                    return bankAccountService.updateBalance(transaction.getTargetProduct().getId(),newBalanceAccount)
                            .then(creditService.getCreditById(transaction.getProduct().getId()))
@@ -92,8 +92,8 @@ public class TransactionService implements ITransactionService {
                             if (transaction.getTransactionType() != TransactionType.PAGO && transaction.getTransactionType() != TransactionType.PAGO_TERCEROS){
                                 return Mono.error(new CustomException("Para realizar pagos de terceros el tipo de pago debe ser PAGO_TERCEROS"));
                             }
-                            BigDecimal newBalance = credit.getOutstandingBalance().subtract(transaction.getAmount());
-                            transaction.getProduct().setProductBalance(newBalance);
+                            BigDecimal newBalance = credit.getBalance().subtract(transaction.getAmount());
+                            transaction.getProduct().setBalance(newBalance);
                             return creditService.updateCreditBalance(transaction.getProduct().getId(), newBalance)
                                     .then(transactionRepository.save(transaction));
                            });
@@ -104,11 +104,11 @@ public class TransactionService implements ITransactionService {
 
                     BigDecimal newBalance;
                     if (Objects.requireNonNull(transaction.getTransactionType()) == TransactionType.PAGO) {
-                        newBalance = credit.getOutstandingBalance().subtract(transaction.getAmount());
+                        newBalance = credit.getBalance().subtract(transaction.getAmount());
                     } else {
                         return Mono.error(new CustomException("Tipo de transacción no soportado para créditos"));
                     }
-                    transaction.getProduct().setProductBalance(newBalance);
+                    transaction.getProduct().setBalance(newBalance);
                     return creditService.updateCreditBalance(transaction.getProduct().getId(), newBalance)
                             .then(transactionRepository.save(transaction));
                 });
@@ -134,7 +134,7 @@ public class TransactionService implements ITransactionService {
                         default:
                             return Mono.error(new CustomException("Tipo de transacción no soportado para tarjetas de crédito"));
                     }
-                    transaction.getProduct().setProductBalance(newBalance);
+                    transaction.getProduct().setBalance(newBalance);
                     return creditCardService.updateCreditCardBalance(transaction.getProduct().getId(), newBalance)
                             .then(transactionRepository.save(transaction));
                 });
@@ -162,12 +162,12 @@ public class TransactionService implements ITransactionService {
                         return Mono.error(new CustomException("Saldo insuficiente para la transferencia"));
                     }
                     BigDecimal newSourceBalance = sourceAccount.getBalance().subtract(transaction.getAmount());
-                    transaction.getProduct().setProductBalance(newSourceBalance);
+                    transaction.getProduct().setBalance(newSourceBalance);
                     return bankAccountService.updateBalance(transaction.getProduct().getId(), newSourceBalance)
                             .then(bankAccountService.getAccountById(transaction.getTargetProduct().getId())
                                     .flatMap(targetAccount -> {
                                         BigDecimal newTargetBalance = targetAccount.getBalance().add(transaction.getAmount());
-                                        transaction.getTargetProduct().setProductBalance(newTargetBalance);
+                                        transaction.getTargetProduct().setBalance(newTargetBalance);
 
                                         return bankAccountService.updateBalance(transaction.getTargetProduct().getId(), newTargetBalance)
                                                 .then(Mono.defer(()->{

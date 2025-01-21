@@ -46,7 +46,7 @@ public class CreditCardService implements ICreditCardService {
                 .flatMap(customer -> {
                     creditCard.setHolder(customer);
                     return creditService.getCreditByHolderById(creditCard.getHolder().getId())
-                            .filter(existingCredit -> existingCredit.getOutstandingBalance().compareTo(BigDecimal.ZERO)> 0
+                            .filter(existingCredit -> existingCredit.getBalance().compareTo(BigDecimal.ZERO)> 0
                             && existingCredit.getEndDate().isBefore(LocalDate.now()))
                             .hasElements()
                             .flatMap(hasDebt -> {
@@ -57,12 +57,12 @@ public class CreditCardService implements ICreditCardService {
                                     .flatMap( existingCredit ->{
                                         if (creditCard.getHolder().getCustomerType() == CustomerType.PERSONAL || creditCard.getHolder().getCustomerType() == CustomerType.PERSONAL_VIP){
 
-                                            long creditCardCount = existingCredit.stream().filter(personalCredit -> creditCard.getCreditType() == ProductType.TARJETA_CREDITO).count();
+                                            long creditCardCount = existingCredit.stream().filter(personalCredit -> creditCard.getProductType() == ProductType.TARJETA_CREDITO).count();
 
-                                            if (creditCard.getCreditType() == ProductType.CREDITO_PERSONAL || creditCard.getCreditType()==ProductType.CREDITO_EMPRESARIAL){
+                                            if (creditCard.getProductType() == ProductType.CREDITO_PERSONAL || creditCard.getProductType()==ProductType.CREDITO_EMPRESARIAL){
                                                 return Mono.error(new CustomException("Solo se registran tarjetas de credito"));
                                             }
-                                            if (creditCard.getCreditType() == ProductType.TARJETA_CREDITO && creditCardCount>0){
+                                            if (creditCard.getProductType() == ProductType.TARJETA_CREDITO && creditCardCount>0){
                                                 return Mono.error(new CustomException("El cliente personal solo puede tener una tarjeta de credito"));
                                             }
 
@@ -72,7 +72,7 @@ public class CreditCardService implements ICreditCardService {
                                             return creditCardRepository.save(creditCard);
 
                                         }else if (creditCard.getHolder().getCustomerType()== CustomerType.EMPRESARIAL || creditCard.getHolder().getCustomerType()== CustomerType.EMPRESARIAL_MYPE){
-                                            if (creditCard.getCreditType() == ProductType.CREDITO_PERSONAL || creditCard.getCreditType()==ProductType.CREDITO_EMPRESARIAL){
+                                            if (creditCard.getProductType() == ProductType.CREDITO_PERSONAL || creditCard.getProductType()==ProductType.CREDITO_EMPRESARIAL){
                                                 return Mono.error(new CustomException("Solo se registran tarjetas de credito"));
                                             }
                                             if (creditCard.getHolder().getDocumentNumber() == null){
@@ -101,7 +101,7 @@ public class CreditCardService implements ICreditCardService {
                                 existingCredit.setHolder(customer);
                                 existingCredit.setCardNumber(credit.getCardNumber());
                                 existingCredit.setCreditLine(credit.getCreditLine());
-                                existingCredit.setCreditType(credit.getCreditType());
+                                existingCredit.setProductType(credit.getProductType());
                                 existingCredit.setUpdatedAt(LocalDateTime.now());
                                 return creditCardRepository.save(existingCredit);
                             });

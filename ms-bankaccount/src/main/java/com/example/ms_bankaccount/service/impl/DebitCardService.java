@@ -1,6 +1,7 @@
 package com.example.ms_bankaccount.service.impl;
 
 import com.example.ms_bankaccount.model.DebitCard;
+import com.example.ms_bankaccount.model.Product;
 import com.example.ms_bankaccount.repository.DebitCardRepository;
 import com.example.ms_bankaccount.service.IBankAccountService;
 import com.example.ms_bankaccount.service.IDebitCardService;
@@ -13,7 +14,9 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -50,7 +53,12 @@ public class DebitCardService implements IDebitCardService {
                     debitCard.setYearExpiration(yearExpiration);
                     debitCard.setCvv(String.format("%03d",new Random().nextInt(1000)));
                     debitCard.setCreateAt(LocalDateTime.now());
-                    debitCard.setBankAccounts(existingAccounts);
+
+                    List<Product> products = existingAccounts.stream()
+                            .map(account->(Product)account)
+                            .toList();
+
+                    debitCard.setBankAccounts(products);
 
                     return debitCardRepository.findDebitCardByNumberCard(debitCard.getNumberCard())
                             .flatMap(existingDebitCard-> Mono.error(new CustomException("La tarjeta de débito ya existe")))
@@ -69,7 +77,12 @@ public class DebitCardService implements IDebitCardService {
                            .collectList()
                            .flatMap(existingAccounts->{
                                if (existingAccounts.isEmpty()) return Mono.error( new CustomException( "No se encontraron cuentas válidas"));
-                               existingDebitCard.setBankAccounts(existingAccounts);
+
+                               List<Product> products = existingAccounts.stream()
+                                       .map(account->(Product)account)
+                                       .toList();
+
+                               existingDebitCard.setBankAccounts(products);
                                return debitCardRepository.save(existingDebitCard);
                            });
                 });

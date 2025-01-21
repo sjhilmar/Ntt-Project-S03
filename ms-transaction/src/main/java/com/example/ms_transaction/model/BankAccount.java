@@ -19,7 +19,7 @@ public class BankAccount extends Product {
     private String accountNumber;
     private String cardNumber;
     private List<Signer> authorizedSigners;
-    private BigDecimal balance;
+    //private BigDecimal balance;
     private int numberMaxTransactions;
     private boolean hasCreditCard;
 

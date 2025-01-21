@@ -44,7 +44,7 @@ public class CreditService implements ICreditService {
                 .bodyToFlux(Credit.class)
                 .collectList()
                 .map(credits -> credits.stream()
-                        .anyMatch(credit-> credit.getOutstandingBalance().compareTo(BigDecimal.ZERO) > 0 &&
+                        .anyMatch(credit-> credit.getBalance().compareTo(BigDecimal.ZERO) > 0 &&
                                 credit.getEndDate().isBefore(LocalDate.now())));
     }
 }

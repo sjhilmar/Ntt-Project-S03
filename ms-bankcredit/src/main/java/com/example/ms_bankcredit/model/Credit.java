@@ -40,12 +40,12 @@ public class Credit {
     private LocalDate endDate; // fecha limite de pago
 
     @NotNull(message = "Se requiere ingresar el tipo del credito")
-    private ProductType creditType;
+    private ProductType productType;
 
     @NotNull(message = "Se requiere ingresar el importe del pago mensual")
     private BigDecimal monthPayment; //pago mensual
 
-    private BigDecimal outstandingBalance; //saldo pendiente de pago del credito
+    private BigDecimal balance; // outstandingBalance saldo pendiente de pago del credito
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

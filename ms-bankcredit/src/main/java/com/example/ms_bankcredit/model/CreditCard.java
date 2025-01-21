@@ -35,7 +35,7 @@ public class CreditCard {
     private BigDecimal balance; //saldo disponible (creditLine-consumption)
 
     @NotNull(message = "Se requiere ingresar el tipo del credito")
-    private ProductType creditType;
+    private ProductType productType;
 
     private LocalDateTime createdAt;
 

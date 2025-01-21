@@ -19,6 +19,6 @@ public class Credit extends Product{
     private LocalDate startDate; // fecha inicio credito
     private LocalDate endDate; // fecha limite de pago
     private BigDecimal monthPayment; //pago mensual
-    private BigDecimal outstandingBalance; //saldo pendiente de pago del credito
+    //private BigDecimal outstandingBalance; //saldo pendiente de pago del credito
 
 }

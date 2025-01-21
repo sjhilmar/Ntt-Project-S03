@@ -18,10 +18,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "bankAccounts")
-public class BankAccount {
+public class BankAccount extends Product{
 
-    @Id
-    private String id;
+//    @Id
+//    private String id;
     @NotNull(message = "Se requiere ingresar el titular")
     private Customer primaryHolder;
     private List<String> secondaryHolders;
@@ -29,9 +29,9 @@ public class BankAccount {
     private String accountNumber;
     private String cardNumber;
     private List<Signer> authorizedSigners;
-    private BigDecimal balance;
-    @NotNull(message = "Se requiere tipo de cuenta bancaria")
-    private ProductType productType;
+    //private BigDecimal balance;
+//    @NotNull(message = "Se requiere tipo de cuenta bancaria")
+//    private ProductType productType;
     @NotNull(message = "Se requiere el numero maximo de transacciones")
     private int numberMaxTransactions;
     private boolean hasCreditCard;

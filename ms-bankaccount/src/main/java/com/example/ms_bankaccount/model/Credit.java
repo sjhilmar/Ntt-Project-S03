@@ -11,17 +11,17 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Credit {
+public class Credit extends Product{
 
-    private String id;
+    //private String id;
     private Customer holder;
     private BigDecimal creditAmount;
     private BigDecimal interesRate; // Tasa de interés
     private int loanTerm; //Plazo de pago(meses)
     private LocalDate startDate; // fecha inicio credito
     private LocalDate endDate; // fecha limite de pago
-    private ProductType creditType;
+    //private ProductType creditType;
     private BigDecimal monthPayment; //pago mensual
-    private BigDecimal outstandingBalance; //saldo pendiente de pago del credito
+    //private BigDecimal outstandingBalance; //saldo pendiente de pago del credito
 
 }

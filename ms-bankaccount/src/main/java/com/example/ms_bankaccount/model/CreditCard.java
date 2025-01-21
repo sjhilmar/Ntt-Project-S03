@@ -12,11 +12,11 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class CreditCard {
 
-    private String id;
+    //private String id;
     private Customer holder;
     private String cardNumber;
     private BigDecimal creditLine;
     private BigDecimal consumption;
-    private BigDecimal balance; //saldo disponible
-    private ProductType creditType;
+   // private BigDecimal balance; //saldo disponible
+    //private ProductType creditType;
 }

@@ -46,7 +46,7 @@ public class CreditService implements ICreditService {
                  credit.setHolder(customer);
 
                  return creditRepository.findByHolderId(credit.getHolder().getId())
-                         .filter(existingCredit -> existingCredit.getOutstandingBalance().compareTo(BigDecimal.ZERO)> 0
+                         .filter(existingCredit -> existingCredit.getBalance().compareTo(BigDecimal.ZERO)> 0
                          && existingCredit.getEndDate().isBefore(LocalDate.now()))
                          .hasElements()
                          .flatMap(hasDebt  ->{
@@ -59,30 +59,30 @@ public class CreditService implements ICreditService {
                                  .flatMap( existingCredit ->{
                                     if (credit.getHolder().getCustomerType() == CustomerType.PERSONAL || credit.getHolder().getCustomerType() == CustomerType.PERSONAL_VIP){
 
-                                        long personalCreditCount = existingCredit.stream().filter(personalCredit -> credit.getCreditType() == ProductType.CREDITO_PERSONAL).count();
+                                        long personalCreditCount = existingCredit.stream().filter(personalCredit -> credit.getProductType() == ProductType.CREDITO_PERSONAL).count();
 
-                                        if (credit.getCreditType() == ProductType.CREDITO_PERSONAL && personalCreditCount>0){
+                                        if (credit.getProductType() == ProductType.CREDITO_PERSONAL && personalCreditCount>0){
                                             return Mono.error(new CustomException("El cliente personal solo puede tener un crédito personal"));
                                         }
-                                        if (credit.getCreditType() == ProductType.TARJETA_CREDITO){
+                                        if (credit.getProductType() == ProductType.TARJETA_CREDITO){
                                             return Mono.error(new CustomException("Solo se registran creditos personales o empresariales"));
                                         }
-                                        if (credit.getCreditType() == ProductType.CREDITO_EMPRESARIAL){
+                                        if (credit.getProductType() == ProductType.CREDITO_EMPRESARIAL){
                                             return Mono.error(new CustomException("El cliente personal no puede tener un crédito empresarial"));
                                         }
                                         credit.setCreatedAt(LocalDateTime.now());
-                                        credit.setOutstandingBalance(credit.getCreditAmount());
+                                        credit.setBalance(credit.getCreditAmount());
                                         return creditRepository.save(credit);
 
                                     }else if (credit.getHolder().getCustomerType()== CustomerType.EMPRESARIAL || credit.getHolder().getCustomerType()== CustomerType.EMPRESARIAL_MYPE){
-                                        if (credit.getCreditType() == ProductType.CREDITO_PERSONAL){
+                                        if (credit.getProductType() == ProductType.CREDITO_PERSONAL){
                                             return Mono.error(new CustomException("El Cliente empresarial no puede tener un credito personal"));
                                         }
                                         if (credit.getHolder().getDocumentNumber() == null){
                                             return Mono.error(new CustomException("El cliente empresarial debe tener al menos un titular"));
                                         }
                                         credit.setCreatedAt(LocalDateTime.now());
-                                        credit.setOutstandingBalance(credit.getCreditAmount());
+                                        credit.setBalance(credit.getCreditAmount());
                                         return creditRepository.save(credit);
                                     }else{
                                         return Mono.error(new CustomException("No existe el tipo de cliente"));
@@ -108,7 +108,7 @@ public class CreditService implements ICreditService {
                                existingCredit.setLoanTerm(credit.getLoanTerm());
                                existingCredit.setStartDate(credit.getStartDate());
                                existingCredit.setEndDate(credit.getEndDate());
-                               existingCredit.setCreditType(credit.getCreditType());
+                               existingCredit.setProductType(credit.getProductType());
                                existingCredit.setMonthPayment(credit.getMonthPayment());
                                existingCredit.setUpdatedAt(LocalDateTime.now());
                                return creditRepository.save(existingCredit);
@@ -121,7 +121,7 @@ public class CreditService implements ICreditService {
         return creditRepository.findById(id)
                 .switchIfEmpty(Mono.error(new CustomException("Credito no encontrado")))
                 .flatMap(existingCredit ->{
-                    existingCredit.setOutstandingBalance(newBalance);
+                    existingCredit.setBalance(newBalance);
                     return creditRepository.save(existingCredit);
                 });
     }

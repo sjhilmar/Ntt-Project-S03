@@ -27,7 +27,7 @@ public class DebitCard {
     private String yearExpiration;
     private String cvv;
     @NotNull(message = "Se requiere ingresar al menos una cuenta bancaria")
-    private List<BankAccount> bankAccounts;
+    private List<Product> bankAccounts;
     private LocalDateTime createAt;
 
 }

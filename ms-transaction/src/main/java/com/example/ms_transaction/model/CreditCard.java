@@ -15,5 +15,5 @@ public class CreditCard extends  Product{
     private String cardNumber;
     private BigDecimal creditLine;
     private BigDecimal consumption;
-    private BigDecimal balance; //saldo disponible
+    //private BigDecimal balance; //saldo disponible
 }
