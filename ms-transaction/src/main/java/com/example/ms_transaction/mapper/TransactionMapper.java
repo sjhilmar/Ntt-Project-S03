@@ -10,12 +10,12 @@ public interface TransactionMapper {
 
     TransactionMapper INSTANCE = Mappers.getMapper(TransactionMapper.class);
 
-    @Mapping(source = "product.id", target = "productId")
-    @Mapping(source = "targetProduct.id", target = "targetProductId")
+//    @Mapping(source = "product.id", target = "productId")
+//    @Mapping(source = "targetProduct.id", target = "targetProductId")
     TransactionDTO toTransactionDTO(Transaction transaction);
 
-    @Mapping(source = "productId", target = "product.id")
-    @Mapping(source = "targetProductId", target = "targetProduct.id")
+//    @Mapping(source = "productId", target = "product.id")
+//    @Mapping(source = "targetProductId", target = "targetProduct.id")
     Transaction toTransaction(TransactionDTO transactionDTO);
 
 }

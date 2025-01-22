@@ -2,6 +2,9 @@ package com.example.ms_mobilewallet.controller;
 
 import com.example.ms_mobilewallet.model.Wallet;
 import com.example.ms_mobilewallet.service.IWalletService;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Single;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -19,24 +22,24 @@ public class WalletController {
     private final IWalletService walletService;
 
     @GetMapping
-    public Flux<Wallet> getAllWallets(){
+    public Flowable<Wallet> getAllWallets(){
         log.info("Listando todas los monederos móviles");
         return walletService.getAllWallets();
     }
     @GetMapping("/{id}")
-    public Mono<Wallet> getWalletById(@PathVariable String id){
+    public Single<Wallet> getWalletById(@PathVariable String id){
         log.info("Listando el monedero móvil con id: {}",id);
         return  walletService.getWalletById(id);
     }
 
     @GetMapping("/{documentNumber}")
-    public Mono<Wallet> getWalletByDocumentNumber(@PathVariable String documentNumber){
+    public Single<Wallet> getWalletByDocumentNumber(@PathVariable String documentNumber){
         log.info("Listando el monedero móvil con número de documento: {}", documentNumber);
         return  walletService.getWalletByDocumentNumber(documentNumber);
     }
 
     @PostMapping
-    public Mono<? extends ResponseEntity<?>> createWallet(@Valid @RequestBody Wallet wallet){
+    public Single<? extends ResponseEntity<?>> createWallet(@Valid @RequestBody Wallet wallet){
         log.info("Creando monedero móvil \n{}",wallet);
         return walletService.createWallet(wallet)
                 .map(ResponseEntity::ok)
@@ -44,7 +47,7 @@ public class WalletController {
     }
 
     @PutMapping("/{id}")
-    public Mono<? extends  ResponseEntity<?>> updateWallet(@PathVariable String id,@RequestBody Wallet wallet){
+    public Single<? extends  ResponseEntity<?>> updateWallet(@PathVariable String id,@RequestBody Wallet wallet){
         log.info("Actualizando monedero móvil \n{}", id + "\n" + wallet);
         return walletService.updateWallet(id,wallet)
                 .map(ResponseEntity::ok)
