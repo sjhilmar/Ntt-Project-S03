@@ -38,3 +38,4 @@ build/
 /ms-bankaccount/logs
 /ms-transaction/logs
 /ms-mobilewallet/logs
+/config-server/logs
