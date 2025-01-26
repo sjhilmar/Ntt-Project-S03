@@ -10,6 +10,7 @@ import com.example.ms_transaction.service.ICreditService;
 import com.example.ms_transaction.service.ITransactionService;
 import com.example.ms_transaction.util.CustomException;
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.spi.ObjectThreadContextMap;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -75,43 +76,55 @@ public class TransactionService implements ITransactionService {
     @Override
     public Mono<Transaction> handleCreditTransaction(Transaction transaction) {
 
-        if (!transaction.getProduct().getId().equalsIgnoreCase(transaction.getTargetProduct().getId())){
-            return bankAccountService.getAccountById(transaction.getTargetProduct().getId())
-               .flatMap(account -> {
-                   if (account.getBalance().compareTo(transaction.getAmount())<0){
-                       return Mono.error(new CustomException("Saldo insuficiente para el pago del crédito"));
-                   }
+        if (transaction.getTransactionType() == TransactionType.PAGO_TERCEROS) {
 
-                   BigDecimal newBalanceAccount = account.getBalance().subtract(transaction.getAmount());
-                   transaction.getTargetProduct().setBalance(newBalanceAccount);
+            if (!Objects.nonNull(transaction.getTargetProduct())){
+                return Mono.error(new CustomException("Debe designar una credito destino para realizar el pago"));
+            }
 
-                   return bankAccountService.updateBalance(transaction.getTargetProduct().getId(),newBalanceAccount)
-                           .then(creditService.getCreditById(transaction.getProduct().getId()))
-                           .flatMap(credit->{
-
-                            if (transaction.getTransactionType() != TransactionType.PAGO && transaction.getTransactionType() != TransactionType.PAGO_TERCEROS){
-                                return Mono.error(new CustomException("Para realizar pagos de terceros el tipo de pago debe ser PAGO_TERCEROS"));
+            if (!transaction.getProduct().getId().equalsIgnoreCase(transaction.getTargetProduct().getId())) {
+                return bankAccountService.getAccountById(transaction.getTargetProduct().getId())
+                        .flatMap(account -> {
+                            if (account.getBalance().compareTo(transaction.getAmount()) < 0) {
+                                return Mono.error(new CustomException("Saldo insuficiente para el pago del crédito"));
                             }
-                            BigDecimal newBalance = credit.getBalance().subtract(transaction.getAmount());
-                            transaction.getProduct().setBalance(newBalance);
-                            return creditService.updateCreditBalance(transaction.getProduct().getId(), newBalance)
-                                    .then(transactionRepository.save(transaction));
-                           });
-            });
-        }
-        return creditService.getCreditById(transaction.getProduct().getId())
-                .flatMap(credit -> {
 
-                    BigDecimal newBalance;
-                    if (Objects.requireNonNull(transaction.getTransactionType()) == TransactionType.PAGO) {
+                            BigDecimal newBalanceAccount = account.getBalance().subtract(transaction.getAmount());
+                            transaction.getTargetProduct().setBalance(newBalanceAccount);
+
+                            return bankAccountService.updateBalance(transaction.getTargetProduct().getId(), newBalanceAccount)
+                                    .then(creditService.getCreditById(transaction.getProduct().getId()))
+                                    .flatMap(credit -> {
+
+                                        if (transaction.getTransactionType() != TransactionType.PAGO && transaction.getTransactionType() != TransactionType.PAGO_TERCEROS) {
+                                            return Mono.error(new CustomException("Para realizar pagos de terceros el tipo de pago debe ser PAGO_TERCEROS"));
+                                        }
+                                        BigDecimal newBalance = credit.getBalance().subtract(transaction.getAmount());
+                                        transaction.getProduct().setBalance(newBalance);
+                                        return creditService.updateCreditBalance(transaction.getProduct().getId(), newBalance)
+                                                .then(transactionRepository.save(transaction));
+                                    });
+                        });
+            }
+            return Mono.error(new CustomException("No se puede realizar un pago a la misma cuenta"));
+
+        }else if (transaction.getTransactionType() == TransactionType.PAGO) {
+
+            transaction.setTargetProduct(transaction.getProduct());
+
+            return creditService.getCreditById(transaction.getProduct().getId())
+                    .flatMap(credit -> {
+
+                        BigDecimal newBalance;
                         newBalance = credit.getBalance().subtract(transaction.getAmount());
-                    } else {
-                        return Mono.error(new CustomException("Tipo de transacción no soportado para créditos"));
-                    }
-                    transaction.getProduct().setBalance(newBalance);
-                    return creditService.updateCreditBalance(transaction.getProduct().getId(), newBalance)
-                            .then(transactionRepository.save(transaction));
-                });
+
+                        transaction.getProduct().setBalance(newBalance);
+                        return creditService.updateCreditBalance(transaction.getProduct().getId(), newBalance)
+                                .then(transactionRepository.save(transaction));
+                    });
+        }
+        return Mono.error(new CustomException("Tipo de transacción no soportado para créditos"));
+
     }
 
     @Override
