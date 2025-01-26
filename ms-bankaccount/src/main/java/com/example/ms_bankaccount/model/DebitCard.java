@@ -22,7 +22,7 @@ public class DebitCard {
     private String id;
     @NotEmpty(message = "Se requiere ingresar numero de tarjeta")
     @Indexed(unique = true)
-    private String numberCard;
+    private String cardNumber;
     private String monthExpiration;
     private String yearExpiration;
     private String cvv;

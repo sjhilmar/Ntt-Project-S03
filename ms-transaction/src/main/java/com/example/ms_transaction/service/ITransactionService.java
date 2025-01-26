@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 public interface ITransactionService {
 
     Flux<Transaction> getAllTransactions();
-    Flux<Transaction> getTransactionByProductId(String productId);
+    Flux<Transaction> getTransactionByTargetProductId(String productId);
     Mono<Transaction> getTransactionById(String id);
     Mono<Transaction> handleBankAccountTransaction(Transaction transaction);
     Mono<Transaction> handleCreditTransaction(Transaction transaction);

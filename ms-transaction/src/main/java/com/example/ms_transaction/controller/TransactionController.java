@@ -35,9 +35,9 @@ public class TransactionController {
   }
 
   @GetMapping("/product/{productId}")
-  public Flux<Transaction> getTransactionByProductId(@PathVariable String productId){
+  public Flux<Transaction> getTransactionByTargetProductId(@PathVariable String productId){
         log.info("Obteniendo transacciones con productId: " + productId);
-        return service.getTransactionByProductId(productId);
+        return service.getTransactionByTargetProductId(productId);
     }
 
   @PostMapping

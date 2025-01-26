@@ -3,7 +3,6 @@ package com.example.ms_bankaccount.controller;
 import com.example.ms_bankaccount.model.DebitCard;
 import com.example.ms_bankaccount.service.IDebitCardService;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -38,10 +37,18 @@ public class DebitCardController {
                 .doOnError(e-> log.error("No se pudo vincular cuentas bancarias \n{}",debitCard,e));
     }
 
-    @PutMapping("/{id}")
-    public Mono<? extends ResponseEntity<?>>updateDebitCard(@PathVariable String id, @Valid @RequestBody DebitCard debitCard){
-        log.info("Actualizando cuentas bancarias para la tarjeta de débito con id{}:",id);
-        return debitCardService.updatedDebitCard(id,debitCard)
+    @PutMapping("/addAccount/{id}")
+    public Mono<? extends ResponseEntity<?>>addAccountInDebitCard(@PathVariable String id, @Valid @RequestBody DebitCard debitCard){
+        log.info("Agregando cuentas bancarias para la tarjeta de débito con id{}:",id);
+        return debitCardService.addAccountInDebitCard(id,debitCard)
+                .map(ResponseEntity::ok)
+                .doOnError(e -> log.error("No se pudo actualizar cuentas bancarias con la tarjeta de débito con id {}",id,e));
+    }
+
+    @PutMapping("/unlinkAccount/{id}")
+    public Mono<? extends ResponseEntity<?>>deleteAccountInDebitCard(@PathVariable String id, @Valid @RequestBody DebitCard debitCard){
+        log.info("Quitando cuentas bancarias para la tarjeta de débito con id{}:",id);
+        return debitCardService.deleteAccountInDebitCard(id,debitCard)
                 .map(ResponseEntity::ok)
                 .doOnError(e -> log.error("No se pudo actualizar cuentas bancarias con la tarjeta de débito con id {}",id,e));
     }

@@ -7,6 +7,6 @@ import reactor.core.publisher.Flux;
 
 @Repository
 public interface TransactionRepository extends ReactiveMongoRepository<Transaction,String> {
-    Flux<Transaction> getTransactionByProductId(String productId);
+    Flux<Transaction> getTransactionByTargetProductId(String productId);
 
 }

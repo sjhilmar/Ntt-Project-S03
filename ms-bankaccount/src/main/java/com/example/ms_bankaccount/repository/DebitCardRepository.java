@@ -6,5 +6,5 @@ import reactor.core.publisher.Mono;
 
 public interface DebitCardRepository extends ReactiveMongoRepository<DebitCard,String> {
 
-    Mono<DebitCard> findDebitCardByNumberCard(String numberCard);
+    Mono<DebitCard> findDebitCardByCardNumber(String numberCard);
 }

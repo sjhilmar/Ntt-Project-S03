@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -24,6 +23,7 @@ public class DebitCardService implements IDebitCardService {
 
     private final DebitCardRepository debitCardRepository;
     private final IBankAccountService bankAccountService;
+
 
     @Override
     public Flux<DebitCard> getAllDebitCards() {
@@ -54,37 +54,68 @@ public class DebitCardService implements IDebitCardService {
                     debitCard.setCvv(String.format("%03d",new Random().nextInt(1000)));
                     debitCard.setCreateAt(LocalDateTime.now());
 
-                    List<Product> products = existingAccounts.stream()
-                            .map(account->(Product)account)
-                            .toList();
-
-                    debitCard.setBankAccounts(products);
-
-                    return debitCardRepository.findDebitCardByNumberCard(debitCard.getNumberCard())
-                            .flatMap(existingDebitCard-> Mono.error(new CustomException("La tarjeta de débito ya existe")))
-                            .switchIfEmpty(debitCardRepository.save(debitCard));
+                    return Flux.fromIterable(existingAccounts)
+                            .flatMap(account -> {
+                                account.setCardNumber(debitCard.getCardNumber());
+                                return bankAccountService.updateBankAccount(account.getId(), account)
+                                        .thenReturn((Product) account)
+                                        .onErrorResume(error -> Mono.error(new CustomException("Error al actualizar el número de tarjeta en la cuenta bancaria")));
+                            })
+                            .collectList()
+                            .flatMap(products -> {
+                                debitCard.setBankAccounts(products);
+                                return debitCardRepository.findDebitCardByCardNumber(debitCard.getCardNumber())
+                                        .flatMap(existingDebitCard -> Mono.error(new CustomException("La tarjeta de débito ya existe")))
+                                        .switchIfEmpty(debitCardRepository.save(debitCard));
+                            });
                 });
     }
 
     @Override
-    public Mono<?> updatedDebitCard(String id, DebitCard debitCard) {
-        return debitCardRepository.findById(id).
-                switchIfEmpty(Mono.error(new CustomException("Tarjeta de debito no encontrada")))
-                .flatMap(existingDebitCard->{
-                   return Flux.fromIterable(debitCard.getBankAccounts())
-                           .flatMap(bankAccount -> bankAccountService.getAccountById(bankAccount.getId()))
-                           .switchIfEmpty(Mono.error(new CustomException("Cuenta bancaria no válida")))
-                           .collectList()
-                           .flatMap(existingAccounts->{
-                               if (existingAccounts.isEmpty()) return Mono.error( new CustomException( "No se encontraron cuentas válidas"));
+    public Mono<?> addAccountInDebitCard(String id, DebitCard debitCard) {
+        return debitCardRepository.findById(id)
+                .switchIfEmpty(Mono.error(new CustomException("Tarjeta de debito no encontrada")))
+                .flatMap(existingDebitCard -> {
+                    return Flux.fromIterable(debitCard.getBankAccounts())
+                            .flatMap(bankAccount -> bankAccountService.getAccountById(bankAccount.getId()))
+                            .switchIfEmpty(Mono.error(new CustomException("Cuenta bancaria no válida")))
+                            .collectList()
+                            .flatMap(newAccounts -> {
+                                if (newAccounts.isEmpty()) {
+                                    return Mono.error(new CustomException("No se encontraron cuentas válidas"));
+                                }
+                                List<Product> updatedAccounts = existingDebitCard.getBankAccounts();
+                                newAccounts.forEach(newAccount -> {
+                                    if (updatedAccounts.stream().noneMatch(account -> account.getId().equals(newAccount.getId()))) {
+                                        updatedAccounts.add((Product) newAccount);
+                                    }
+                                });
+                                existingDebitCard.setBankAccounts(updatedAccounts);
+                                return debitCardRepository.save(existingDebitCard);
+                            });
+                });
+    }
 
-                               List<Product> products = existingAccounts.stream()
-                                       .map(account->(Product)account)
-                                       .toList();
-
-                               existingDebitCard.setBankAccounts(products);
-                               return debitCardRepository.save(existingDebitCard);
-                           });
+    @Override
+    public Mono<?> deleteAccountInDebitCard(String id, DebitCard debitCard) {
+        return debitCardRepository.findById(id)
+                .switchIfEmpty(Mono.error(new CustomException("Tarjeta de debito no encontrada")))
+                .flatMap(existingDebitCard -> {
+                    return Flux.fromIterable(debitCard.getBankAccounts())
+                            .flatMap(bankAccount -> bankAccountService.getAccountById(bankAccount.getId()))
+                            .switchIfEmpty(Mono.error(new CustomException("Cuenta bancaria no válida")))
+                            .collectList()
+                            .flatMap(accountsToRemove -> {
+                                if (accountsToRemove.isEmpty()) {
+                                    return Mono.error(new CustomException("No se encontraron cuentas válidas para eliminar"));
+                                }
+                                List<Product> updatedAccounts = existingDebitCard.getBankAccounts();
+                                accountsToRemove.forEach(accountToRemove ->
+                                        updatedAccounts.removeIf(account -> account.getId().equals(accountToRemove.getId()))
+                                );
+                                existingDebitCard.setBankAccounts(updatedAccounts);
+                                return debitCardRepository.save(existingDebitCard);
+                            });
                 });
     }
 }

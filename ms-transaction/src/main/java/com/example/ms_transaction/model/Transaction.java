@@ -16,8 +16,8 @@ public class Transaction {
     @Id
     private String id;
     @NotNull(message = "Se requiere ingresar el Id de la cuenta/")
-    private Product product;
     private Product targetProduct;
+    private Product sourceProduct;
     @NotNull(message = "Se requiere ingresar el tipo de transacción")
     private TransactionType transactionType;
     private MovementType movementType;
