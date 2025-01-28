@@ -40,9 +40,7 @@ public class BankAccountController {
     @GetMapping("/customer/{id}")
     public Flux<BankAccount>getByPrimaryHolderId(@PathVariable String id){
         log.info("Obteniendo cuentas bancarias por id del cliente: {}",id);
-
-        return service.getByPrimaryHolderId(id)
-                .doOnError(e-> log.error("Error al consultar la cuenta bancaria con id de cliente {}",id,e));
+        return service.getByPrimaryHolderId(id);
 
     }
 
