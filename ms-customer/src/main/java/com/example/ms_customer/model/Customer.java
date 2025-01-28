@@ -17,7 +17,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 @Document(collection = "customers")
 public class Customer {
   @Id

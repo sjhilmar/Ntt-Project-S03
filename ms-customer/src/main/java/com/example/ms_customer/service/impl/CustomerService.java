@@ -12,10 +12,13 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 
 @Service
-@AllArgsConstructor
 public class CustomerService implements ICustomerService {
 
     private final CustomerRepository repository;
+
+    public CustomerService(CustomerRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public Flux<Customer> getAllCustomer() {
@@ -25,7 +28,7 @@ public class CustomerService implements ICustomerService {
     @Override
     public Mono<Customer> getCustomerById(String id) {
         return repository.findById(id)
-                .switchIfEmpty(Mono.error(new CustomException("No se encontró cliente")));
+                .switchIfEmpty(Mono.error(new CustomException("No se encontró cliente con el id: " + id)));
     }
 
     @Override
