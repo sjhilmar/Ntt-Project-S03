@@ -6,6 +6,6 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface WalletRepository extends ReactiveMongoRepository<Wallet,String> {
+public interface QueryWalletRepository extends ReactiveMongoRepository<Wallet,String> {
     Single<Wallet> findWalletByDocumentNumber(String numberPhone);
 }

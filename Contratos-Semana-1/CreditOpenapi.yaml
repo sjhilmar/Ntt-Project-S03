@@ -1,0 +1,159 @@
+openapi: 3.0.0
+info:
+  title: Credit Product Service API
+  description: API para gestionar productos bancarios (créditos) para clientes del tipo Empresarial o Personal.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api
+    description: Servidor local
+
+paths:
+  /credit-products:
+    get:
+      summary: Obtener todos los productos de crédito
+      operationId: getAllCreditProducts
+      responses:
+        '200':
+          description: Lista de todos los productos de crédito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CreditProduct'
+    post:
+      summary: Crear un nuevo producto de crédito
+      operationId: createCreditProduct
+      requestBody:
+        description: Datos del nuevo producto de crédito
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditProduct'
+      responses:
+        '201':
+          description: Producto de crédito creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditProduct'
+        '400':
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /credit-products/{id}:
+    get:
+      summary: Obtener un producto de crédito por ID
+      operationId: getCreditProductById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Producto de crédito encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditProduct'
+        '404':
+          description: Producto de crédito no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Actualizar un producto de crédito por ID
+      operationId: updateCreditProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Datos actualizados del producto de crédito
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditProduct'
+      responses:
+        '200':
+          description: Producto de crédito actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditProduct'
+        '404':
+          description: Producto de crédito no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Eliminar un producto de crédito por ID
+      operationId: deleteCreditProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Producto de crédito eliminado exitosamente
+        '404':
+          description: Producto de crédito no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    CreditProduct:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "5f8f8c44e3c1a2b1b8b2c8c8"
+        customerId:
+          type: string
+          example: "123456"
+        accountHolderName:
+          type: string
+          example: "John Doe"
+        creditAmount:
+          type: number
+          format: double
+          example: 10000.00
+        authorizedSigners:
+          type: array
+          items:
+            type: string
+          example: ["Jane Doe", "John Smith"]
+        holders:
+          type: array
+          items:
+            type: string
+          example: ["John Doe", "Jane Doe"]
+        creditType:
+          type: string
+          enum: [PERSONAL, EMPRESARIAL, TARJETA_CREDITO]
+          example: "PERSONAL"
+        clientType:
+          type: string
+          enum: [PERSONAL, EMPRESARIAL]
+          example: "PERSONAL"
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Credit product not found"

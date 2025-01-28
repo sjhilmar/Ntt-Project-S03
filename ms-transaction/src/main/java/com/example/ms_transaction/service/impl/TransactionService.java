@@ -44,6 +44,11 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
+    public Mono<Transaction> getTransactionsLast10ByCardNumber(String cardNumber) {
+        return null;
+    }
+
+    @Override
     public Mono<Transaction> handleBankAccountTransaction(Transaction transaction) {
         return bankAccountService.getAccountById(transaction.getTargetProduct().getId())
                 .flatMap(account -> {
@@ -214,4 +219,7 @@ public class TransactionService implements ITransactionService {
                                     }));
                 });
     }
+
+
+
 }

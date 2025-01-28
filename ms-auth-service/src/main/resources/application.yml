@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: ms-auth-server
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/authdb
+  cloud:
+    config:
+      enabled: false
+server:
+  port: 8083
+loggin:
+  file:
+    name: logs/app.log
+#  security:
+#    jwt:
+#      secret: my-secret-key
+#      expiration: 60000 # 1 minuto en milisegundos
+jwt:
+  secret: my-super-secret-key # Clave secreta para firmar los JWT
+  expiration: 600000         # Expiración del token en milisegundos (1 hora)

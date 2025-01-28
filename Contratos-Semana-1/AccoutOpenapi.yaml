@@ -1,0 +1,162 @@
+openapi: 3.0.0
+info:
+  title: Bank Product Service API
+  description: API para gestionar productos bancarios (cuentas corrientes) para clientes del tipo Empresarial o Personal.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api
+    description: Servidor local
+
+paths:
+  /accounts:
+    get:
+      summary: Obtener todas las cuentas bancarias
+      operationId: getAllAccounts
+      responses:
+        '200':
+          description: Lista de todas las cuentas bancarias
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BankAccount'
+    post:
+      summary: Crear una nueva cuenta bancaria
+      operationId: createBankAccount
+      requestBody:
+        description: Datos de la nueva cuenta bancaria
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BankAccount'
+      responses:
+        '201':
+          description: Cuenta bancaria creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankAccount'
+        '400':
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /accounts/{id}:
+    get:
+      summary: Obtener una cuenta bancaria por ID
+      operationId: getAccountById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cuenta bancaria encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankAccount'
+        '404':
+          description: Cuenta bancaria no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Actualizar una cuenta bancaria por ID
+      operationId: updateBankAccount
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Datos actualizados de la cuenta bancaria
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BankAccount'
+      responses:
+        '200':
+          description: Cuenta bancaria actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankAccount'
+        '404':
+          description: Cuenta bancaria no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Eliminar una cuenta bancaria por ID
+      operationId: deleteBankAccount
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Cuenta bancaria eliminada exitosamente
+        '404':
+          description: Cuenta bancaria no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    BankAccount:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "5f8f8c44e3c1a2b1b8b2c8c8"
+        customerId:
+          type: string
+          example: "123456"
+        accountNumber:
+          type: string
+          example: "1234567890"
+        accountHolderName:
+          type: string
+          example: "John Doe"
+        balance:
+          type: number
+          format: double
+          example: 1000.50
+        authorizedSigners:
+          type: array
+          items:
+            type: string
+          example: ["Jane Doe", "John Smith"]
+        holders:
+          type: array
+          items:
+            type: string
+          example: ["John Doe", "Jane Doe"]
+        accountType:
+          type: string
+          enum: [AHORRO, CORRIENTE, PLAZO_FIJO]
+          example: "CORRIENTE"
+        clientType:
+          type: string
+          enum: [PERSONAL, EMPRESARIAL]
+          example: "EMPRESARIAL"
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Account not found"
