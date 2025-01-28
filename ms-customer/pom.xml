@@ -144,6 +144,8 @@
 						<exclude>com/example/ms_customer/util/CustomException.class</exclude>
 						<exclude>com/example/ms_customer/exception/GlobalExceptionHandler.class</exclude>
 						<exclude>com/example/ms_customer/exception/dto/ErrorResponse.class</exclude>
+						<exclude>com/example/ms_customer/config/OpenApiConfig.class</exclude>
+						<exclude>com/example/ms_customer/model/enums/CustomerType.class</exclude>
 					</excludes>
 				</configuration>
 				<!--Exclusiones para reporte de cobertura-->

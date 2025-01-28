@@ -114,4 +114,33 @@ class CustomerServiceTest {
         StepVerifier.create(result)
                 .verifyComplete();
     }
+    @Test
+    void createCustomer_AlreadyExists() {
+        Customer customer = new Customer("1", "123", "Company A", "John Doe", "john@example.com", "1234567890", CustomerType.PERSONAL, LocalDateTime.now(), LocalDateTime.now());
+        Mockito.when(customerRepository.findCustomerByDocumentNumber("123")).thenReturn(Mono.just(customer));
+        Mono<Customer> result = customerService.createCustomer(customer);
+        StepVerifier.create(result)
+                .expectError(CustomException.class)
+                .verify();
+    }
+
+    @Test
+    void updateCustomer_NotFound() {
+        Customer updatedCustomer = new Customer("2", "456", "Company B", "Jane Doe", "jane@example.com", "0987654321", CustomerType.EMPRESARIAL, LocalDateTime.now(), LocalDateTime.now());
+        Mockito.when(customerRepository.findById("1")).thenReturn(Mono.empty());
+        Mono<Customer> result = customerService.updateCustomer("1", updatedCustomer);
+        StepVerifier.create(result)
+                .expectError(CustomException.class)
+                .verify();
+    }
+
+    @Test
+    void deleteCustomerById_NotFound() {
+        Mockito.when(customerRepository.findById("1")).thenReturn(Mono.empty());
+        Mono<Void> result = customerService.deleteCustomerById("1");
+        StepVerifier.create(result)
+                .expectError(CustomException.class)
+                .verify();
+    }
+
 }

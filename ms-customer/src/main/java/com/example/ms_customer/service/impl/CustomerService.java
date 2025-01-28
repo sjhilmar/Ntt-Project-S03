@@ -50,6 +50,7 @@ public class CustomerService implements ICustomerService {
     @Override
     public Mono<Customer> updateCustomer(String id, Customer customer) {
         return repository.findById(id)
+                .switchIfEmpty(Mono.error(new CustomException("No se encontró cliente")))
                 .flatMap(existingCustomer -> {
                     existingCustomer.setDocumentNumber(customer.getDocumentNumber());
                     existingCustomer.setCompanyName(customer.getCompanyName());
