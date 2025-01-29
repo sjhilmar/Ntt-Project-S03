@@ -1,15 +1,11 @@
 package com.example.ms_mobilewallet.dto;
 
 import com.example.ms_mobilewallet.model.enums.DocumentType;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
-
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
